@@ -6,19 +6,23 @@ using System.Collections.Generic;
 public class MyGame : MonoBehaviour
 {
     public GameObject[] colorObjects; // Массив объектов с цветами
-    public int sequenceLength = 4; // Длина последовательности цветов
+    private int sequenceLength = 2; // Длина последовательности цветов
     public float lightUpDuration = 1.0f; // Продолжительность подсветки в секундах
     public float timeBetweenColors = 0.5f; // Время между подсветками в секундах
-    private List<int> sequence = new List<int>(); // Диннамический контейнер для хранения последовательности подсветки
+    private List<int> sequence = new List<int>(1); // Диннамический контейнер для хранения последовательности подсветки
     private int currentIndex = 0; // Индекс текущего объекта для подсветки
-    private bool playerInputEnabled;
+    private bool playerInputEnabled = false;
     private bool isGameOver = false;
     public float updateInterval = 10.0f; // Интервал обновления в секундах
+    public GameObject _losePanel;
 
 
+    private void Awake()
+    {
+        RandomCubes();
+    }
     private void Start()
     {
-        StartCoroutine(UpdateRandomCubes());
         StartCoroutine(PlaySequence());
     }
 
@@ -31,7 +35,7 @@ public class MyGame : MonoBehaviour
 
     private void ClickSquare()
     {
-        if (Input.GetMouseButtonDown(0) && !isGameOver)
+        if (Input.GetMouseButtonDown(0) && !isGameOver && playerInputEnabled)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -49,13 +53,15 @@ public class MyGame : MonoBehaviour
                         sequenceLength++;
                         Debug.Log("Вы Выиграли!");
                         currentIndex = 0;
+                        RandomCubes();
                         StartCoroutine(PlaySequence());
+                        playerInputEnabled = false;
                     }
                 }
                 else
                 {
+                    _losePanel.SetActive(true);
                     isGameOver = true;
-                    Debug.Log("Вы проиграли!");
                 }
 
             }
@@ -67,26 +73,16 @@ public class MyGame : MonoBehaviour
         {
             if (index == order)
             {
-                Debug.Log(order);
+                Debug.Log(index);
                 return true;
-            } 
-                
-
+            }    
         }
-
-        //for (int i = 0; i < sequenceLength; i++)
-        //{
-        //    if (index == sequence[i])
-        //    {
-        //        return true;
-        //    }
-        //}
         return false;
     }
 
     void RandomCubes()
     {
-        //sequence.Clear();
+        sequence.Clear();
         for (int i = 0; i < sequenceLength; i++)
         {
             sequence.Add(UnityEngine.Random.Range(0, colorObjects.Length));
@@ -113,26 +109,17 @@ public class MyGame : MonoBehaviour
         yield return new WaitForSeconds(delay);
         TurnOffObject(index);
     }
+
     IEnumerator PlaySequence() // Подсветка объектов по порядку из массива sequence
     {
         foreach (int index in sequence)
         {
-            LightUpObject(index);
-            Debug.Log($"{index}");
+            yield return new WaitForSeconds(1.5f);
+            LightUpObject(index);;
             yield return new WaitForSeconds(lightUpDuration); // Продолжительность подсветки в секундах
             TurnOffObject(index);
-            yield return new WaitForSeconds(timeBetweenColors);
-            playerInputEnabled = true;
+            yield return new WaitForSeconds(timeBetweenColors);     
         }
-    }
-    IEnumerator UpdateRandomCubes()
-    {
-        yield return new WaitForSeconds(10f);
-
-        while (true) // Бесконечный цикл, чтобы корутина выполнялась постоянно
-        {
-            RandomCubes();
-            yield return new WaitForSeconds(updateInterval + 1f);
-        }
+        yield return playerInputEnabled = true;
     }
 }
