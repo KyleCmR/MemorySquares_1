@@ -9,7 +9,6 @@ public class PlayAudio : MonoBehaviour
     public AudioClip _audioClip2;
     public AudioClip _audioClip3;
     public AudioClip _audioClip4;
-    public AudioClip _audioClip5;
     public void PlayClip(int index)
     {
         switch (index)
@@ -22,8 +21,6 @@ public class PlayAudio : MonoBehaviour
                 _audioSource.PlayOneShot(_audioClip3); break;
             case 4:
                 _audioSource.PlayOneShot(_audioClip4); break;
-            case 5:
-                _audioSource.PlayOneShot(_audioClip5); break;
         }
     }
 }
