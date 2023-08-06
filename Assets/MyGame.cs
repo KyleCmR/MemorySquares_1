@@ -2,6 +2,8 @@ using System.Collections;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using TMPro;
 
 public class MyGame : MonoBehaviour
 {
@@ -15,26 +17,38 @@ public class MyGame : MonoBehaviour
     private bool isGameOver = false;
     public float updateInterval = 10.0f; // Интервал обновления в секундах
     public GameObject _losePanel;
+    public AudioSource _audioSource;
+    public PlayAudio _playAudio;
+    [SerializeField] TextMeshProUGUI _score;
+    [SerializeField] TextMeshProUGUI _correctSequence;
+    [SerializeField] TextMeshProUGUI _status;
+
 
 
     private void Awake()
     {
+        _playAudio = GetComponent<PlayAudio>();
+        _audioSource = GetComponent<AudioSource>();
         RandomCubes();
+
     }
     private void Start()
     {
+        
         StartCoroutine(PlaySequence());
     }
-
 
     private void Update()
     {
         ClickSquare();
+        _correctSequence.text = currentIndex.ToString() + "/" + sequenceLength.ToString();
+        CheckStatus();
     }
 
 
     private void ClickSquare()
     {
+
         if (Input.GetMouseButtonDown(0) && !isGameOver && playerInputEnabled)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -42,26 +56,34 @@ public class MyGame : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 GameObject clickedObject = hit.collider.gameObject; 
-                int index = System.Array.IndexOf(colorObjects, clickedObject); // записываем объект на который нажали
+                int index = System.Array.IndexOf(colorObjects, clickedObject);// записываем объект на который нажали
+                
                 if (CompareWithSequence(index))
                 {
                     currentIndex++;
                     LightUpObject(index);
-                    PlayAudioClick(index);
+                    _playAudio.PlayClip(4);
+                    
                     if (currentIndex == sequenceLength)
                     {
                         sequenceLength++;
-                        Debug.Log("Вы Выиграли!");
+                        _playAudio.PlayClip(5);
                         currentIndex = 0;
                         RandomCubes();
                         StartCoroutine(PlaySequence());
                         playerInputEnabled = false;
+                        _score.text = sequenceLength.ToString();
                     }
                 }
                 else
-                {
+                {               
+                    _playAudio.PlayClip(2);
                     _losePanel.SetActive(true);
                     isGameOver = true;
+                    foreach (GameObject obj in colorObjects)
+                    {
+                        obj.SetActive(false);
+                    }
                 }
 
             }
@@ -73,7 +95,6 @@ public class MyGame : MonoBehaviour
         {
             if (index == order)
             {
-                Debug.Log(index);
                 return true;
             }    
         }
@@ -89,10 +110,25 @@ public class MyGame : MonoBehaviour
         }
     }
 
-    void PlayAudioClick (int index)
+    void CheckStatus()
     {
-        colorObjects[index].GetComponent<AudioSource>().Play();
+        if (playerInputEnabled == false)
+        {
+            _status.text = "Запоминай";
+            _status.color = Color.red;
+        }
+        else
+        {
+            _status.text = "Повтори";
+            _status.color = Color.green;
+        }
+        if (isGameOver)
+        {
+            _status.text = "ЛОШАРА";
+            _status.color = Color.red;
+        }    
     }
+
     void LightUpObject(int index)
     {
         colorObjects[index].GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
@@ -115,7 +151,8 @@ public class MyGame : MonoBehaviour
         foreach (int index in sequence)
         {
             yield return new WaitForSeconds(1.5f);
-            LightUpObject(index);;
+            LightUpObject(index);
+            _playAudio.PlayClip(3);
             yield return new WaitForSeconds(lightUpDuration); // Продолжительность подсветки в секундах
             TurnOffObject(index);
             yield return new WaitForSeconds(timeBetweenColors);     
