@@ -1522,8 +1522,8 @@ GameObject:
   m_Component:
   - component: {fileID: 908220477}
   - component: {fileID: 908220479}
-  - component: {fileID: 908220481}
   - component: {fileID: 908220480}
+  - component: {fileID: 908220481}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1566,7 +1566,7 @@ MonoBehaviour:
   lightUpDuration: 1
   timeBetweenColors: 0.5
   _losePanel: {fileID: 2032102245}
-  _playAudio: {fileID: 908220481}
+  _playAudio: {fileID: 0}
   _transfomObj: {fileID: 0}
   _score: {fileID: 1581245061}
   _correctSequence: {fileID: 596712863}
@@ -1680,10 +1680,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audioSource: {fileID: 908220480}
-  _audioClip1: {fileID: 8300000, guid: fc66bd79f6b190947bdbbf19aa5bde10, type: 3}
-  _audioClip2: {fileID: 8300000, guid: 75d19c1e31bc19646a76d5ddce582e1c, type: 3}
-  _audioClip3: {fileID: 8300000, guid: 22fa936e0f2d18640b541923fc3d3962, type: 3}
-  _audioClip4: {fileID: 8300000, guid: 3bfaadd80bc6e1049b3356bd95d2b497, type: 3}
+  _audioClip:
+  - {fileID: 8300000, guid: 22fa936e0f2d18640b541923fc3d3962, type: 3}
+  - {fileID: 8300000, guid: fc66bd79f6b190947bdbbf19aa5bde10, type: 3}
+  - {fileID: 8300000, guid: 3bfaadd80bc6e1049b3356bd95d2b497, type: 3}
+  - {fileID: 8300000, guid: 75d19c1e31bc19646a76d5ddce582e1c, type: 3}
 --- !u!1 &1510757154
 GameObject:
   m_ObjectHideFlags: 0
