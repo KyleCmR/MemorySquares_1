@@ -6,13 +6,26 @@ public class SoundOnMouseTrigger : MonoBehaviour
 {
     public AudioSource _audioSource;
     bool _isPlaying = false;
+    bool _isMouseInObject = false;
     public Transform _transform;
+    private Quaternion _originalRotation;
 
     private void Start()
     {
         _transform = GetComponent<Transform>();
         _audioSource= GetComponent<AudioSource>();
+        _originalRotation = transform.rotation;
     }
+
+    private void Update()
+    {
+        if (_isPlaying)
+        {
+            _transform.Rotate(Vector3.up * Time.deltaTime * 50);       
+        }
+    }
+
+
     private void OnMouseEnter()
     {
         if (!_audioSource.isPlaying && !_isPlaying)
@@ -20,11 +33,10 @@ public class SoundOnMouseTrigger : MonoBehaviour
             _audioSource.Play();
             _isPlaying = true;
         }
-        //_transform.Rotate(2, 4, 0);
     }
     private void OnMouseExit()
     {
         _isPlaying = false;
-        //_transform.Rotate(-2, -4, 0);
+        transform.rotation = _originalRotation;
     }
 }

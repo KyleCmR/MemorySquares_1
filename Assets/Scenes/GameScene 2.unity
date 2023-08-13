@@ -1563,8 +1563,8 @@ MonoBehaviour:
   - {fileID: 2078211018}
   - {fileID: 248169625}
   - {fileID: 1510757154}
-  lightUpDuration: 1
-  timeBetweenColors: 0.5
+  _lightUpDuration: 1.5
+  _timeBetweenColors: 0.5
   _losePanel: {fileID: 2032102245}
   _playAudio: {fileID: 0}
   _transfomObj: {fileID: 0}
