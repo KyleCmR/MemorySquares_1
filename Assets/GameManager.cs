@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject[] _colorObjects;
+    public GameObject[] _arrayCube;
     private List<int> _sequence = new List<int>();
     private int _sequenceLength = 1;
 
@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 GameObject clickedObject = hit.collider.gameObject;
-                int index = Array.IndexOf(_colorObjects, clickedObject);
+                int index = Array.IndexOf(_arrayCube, clickedObject);
 
                 if (CompareWithSequence(index))
                 {
@@ -80,7 +80,7 @@ public class GameManager : MonoBehaviour
                     _playAudio.PlayClip(1);
                     _losePanel.SetActive(true);
                     _isGameOver = true;
-                    foreach (GameObject obj in _colorObjects)
+                    foreach (GameObject obj in _arrayCube)
                     {
                         obj.SetActive(false);
                     }
@@ -99,14 +99,14 @@ public class GameManager : MonoBehaviour
     {
         if (_currentScene.buildIndex == 1)
         {
-            _sequence.Add(UnityEngine.Random.Range(0, _colorObjects.Length));
+            _sequence.Add(UnityEngine.Random.Range(0, _arrayCube.Length));
         }
         else if (_currentScene.buildIndex == 2)
         {
             _sequence.Clear();
             for (int i = 0; i < _sequenceLength; i++)
             {
-                _sequence.Add(UnityEngine.Random.Range(0, _colorObjects.Length));
+                _sequence.Add(UnityEngine.Random.Range(0, _arrayCube.Length));
             }
         }
     }
@@ -131,13 +131,13 @@ public class GameManager : MonoBehaviour
 
     void LightUp(int index)
     {
-        _colorObjects[index].GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+        _arrayCube[index].GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
         StartCoroutine(LightDown1sec(index, 0.5f));
     }
 
     void LightDown(int index)
     {
-        _colorObjects[index].GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
+        _arrayCube[index].GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
     }
 
     IEnumerator LightDown1sec(int index, float delay) 

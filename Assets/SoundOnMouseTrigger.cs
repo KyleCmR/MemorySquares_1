@@ -6,25 +6,19 @@ public class SoundOnMouseTrigger : MonoBehaviour
 {
     public AudioSource _audioSource;
     bool _isPlaying = false;
-    bool _isMouseInObject = false;
     public Transform _transform;
-    private Quaternion _originalRotation;
+    [SerializeField] public Animator _animator;
 
+    private void Awake()
+    {
+
+    }
     private void Start()
     {
+        _animator = GetComponent<Animator>();
         _transform = GetComponent<Transform>();
-        _audioSource= GetComponent<AudioSource>();
-        _originalRotation = transform.rotation;
+        _audioSource = GetComponent<AudioSource>();
     }
-
-    private void Update()
-    {
-        if (_isPlaying)
-        {
-            _transform.Rotate(Vector3.up * Time.deltaTime * 50);       
-        }
-    }
-
 
     private void OnMouseEnter()
     {
@@ -32,11 +26,13 @@ public class SoundOnMouseTrigger : MonoBehaviour
         {
             _audioSource.Play();
             _isPlaying = true;
+            _animator.SetBool("_isMouse", true);
         }
     }
     private void OnMouseExit()
     {
         _isPlaying = false;
-        transform.rotation = _originalRotation;
+        _animator.SetBool("_isMouse", false);
+        //transform.rotation = _originalRotation;
     }
 }
